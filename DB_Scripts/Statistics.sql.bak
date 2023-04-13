@@ -1,0 +1,15 @@
+--- Lock  statistics
+
+EXEC DBMS_STATS.lock_schema_stats('HR');
+EXEC DBMS_STATS.lock_table_stats('HR', 'TEST');
+EXEC DBMS_STATS.lock_partition_stats('HR', 'TEST', 'TEST_FEB2021');
+
+-- Unlock statistics
+
+EXEC DBMS_STATS.unlock_schema_stats('HR');
+EXEC DBMS_STATS.unlock_table_stats('HR', 'TEST');
+EXEC DBMS_STATS.unlock_partition_stats('HR', 'TEST', 'TEST_FEB2021');
+
+--- check stats status:
+
+SELECT stattype_locked FROM dba_tab_statistics WHERE table_name = 'TEST' and owner = 'HR';
