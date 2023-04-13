@@ -20,3 +20,5 @@ SELECT
  where w.sid=s.sid
  and s.status='ACTIVE'
    AND s.type='USER';
+
+   
