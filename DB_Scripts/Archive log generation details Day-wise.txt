@@ -1,0 +1,3 @@
+select to_char(COMPLETION_TIME,'DD-MON-YYYY'),count(*)
+from v$archived_log group by to_char(COMPLETION_TIME,'DD-MON-YYYY')
+order by to_char(COMPLETION_TIME,'DD-MON-YYYY');
