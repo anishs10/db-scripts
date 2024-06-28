@@ -1,0 +1,19 @@
+SQL> ALTER SYSTEM SET LOG_ARCHIVE_DEST_2= 'SERVICE=dsprod ASYNC VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE) DB_UNIQUE_NAME=dsprod';
+
+System altered.
+
+SQL> select protection_mode from v$database;
+
+PROTECTION_MODE
+--------------------
+MAXIMUM AVAILABILITY
+
+SQL> ALTER DATABASE SET STANDBY DATABASE TO MAXIMIZE PERFORMANCE;
+
+Database altered. 
+
+SQL> select protection_mode from v$database;
+
+PROTECTION_MODE
+--------------------
+MAXIMUM PERFORMANCE
