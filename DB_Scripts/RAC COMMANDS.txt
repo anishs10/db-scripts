@@ -1,0 +1,174 @@
+                                 
+								   ***************************** RAC COMMANDS *****************************
+								   
+   https://support.oracle.com/epmos/faces/DocumentDisplay?_afrLoop=212178633169504&id=1481647.1&_afrWindowMode=0&_adf.ctrl-state=1jid57e59_153
+
+*******************************************************************************************************************************************************************
+
+                                           ************************** SRVCTL COMMANDS **************************
+
+---------------------------
+CHECK DATABASE DETAILS :-
+---------------------------
+
+$ srvctl status database -d orcl                                               <------------ CHECK DB STATUS
+
+$ srvctl config database -d orcl                                               <------------ CHECK DB CONFIGURATION
+
+$ srvctl config database                                                       <------------ TO KNOW WHICH DATABASE IS RUNNING
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-------------------------
+STARTING DATABASE :-
+-------------------------
+
+$ srvctl start database -d orcl                                                  <------------ START DB NORMALLY
+
+$ srvctl start database -d DB_NAME -o nomount                                    <------------  NOMOUNT MODE
+
+$ srvctl start database -d orcl -o mount                                         <------------  MOUNT MODE
+
+$ srvctl start database -d DB_NAME -o restrict                                   <------------  RESTRICTED MODE
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-------------------------
+SHUTDOWN DATABASE :-
+-------------------------
+
+$ srvctl stop database -d orcl  /  $ srvctl stop database -d orcl -o normal     <------------ DB SHUTDOWN NORMAL
+
+$ srvctl stop database -d orcl -o immediate                                     <------------ DB SHUTDOWN IMMEDIATE
+
+$ srvctl stop database -d orcl -o transactional                                 <------------ DB SHUTDOWN TRANSACTIONAL 
+
+$ srvctl stop database -d orcl -o abort                                         <------------ DB SHUTDOWN ABORT
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------------------------------
+CREATING A SERVICE IN RAC :-
+------------------------------
+
+-d -- database
+-s -- service
+-r -- preferred instance(preferred_list)
+-a -- available instance(available_list)
+-P -- taf(transparent application failover)
+-l -- role
+-y --
+-e --
+-m -- failover method(instance)
+-z -- retries after failover
+-w -- wait after 1 retry 
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------
+ADDING SERVICES :-
+-------------------
+
+CASE 1 :-
+$ srvctl add service -d orcl -s ser1 -r orcl1 -a orcl2 -P basic -l Primary -y automatic -e none -m none -z 10 -w 5
+
+[ IN THIS CASE , -P -> taf(transparent application failover) WILL BE BASIC AND , -m -> failover method(instance) WILL BE NONE , 
+ SO THAT THE LOAD WILL ONLY BE SWITCHED TO ORCL2 IN CASE OF APPLICATION FAILOVER ]
+ 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+CASE 2:- 
+$ srvctl add service -d orcl -s ser2 -r orcl1 -a orcl2 -P basic -l Primary -y automatic -e none -m basic -z 10 -w 5
+
+[IN THIS CASE, BOTH -P AND -M ARE SET TO BASIC , SO THAT LOAD WILL BE SHARED TO ORCL2 IN BOTH APPLICATION FAILOVER AND INSTANCE FAILOVER ]
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CASE 3:-
+$ srvctl add service -d orcl -s ser3 -r orcl1,orcl2 -P basic -l Primary -y automatic -e none -m basic -z 10 -w 5
+
+[IN THIS CASE,WE HAVE NOT GIVEN ANY AVAILABLE INSTANCE AND BOTH INSTANCES AS PREFERRED INSTANCE. SO,BOTH INSTANCES ORCL1 & ORCL2 ARE IN LOAD SHARING MODE ]
+                                                                                                                                        ------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+CASE 4:-
+$ srvctl add service -d orcl -s ser4 -r orcl1 -P basic -l Primary -y automatic -e none -m none -z 10 -w 5
+
+[IN THIS CASE, WE HAVE NOT GIVEN ANY AVAILABLE INSTANCE SO THAT LOAD WILL ONLY COME TO ORCL1 WHICH IS GIVEN HERE AS PREFERRED INSTANCE]	.	
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------
+STARTING SERVICE IN RAC :-
+----------------------------
+
+$ srvctl start service -s ser1 -d orcl
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+------------------------------
+CHECK SERVICE STATUS IN RAC :-
+------------------------------
+
+$ srvctl status service -s ser1 -d orcl
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------------
+CHECK CONFIGURATION OF SERVICE :-
+-----------------------------------
+
+$ srvctl config service -s ser1 -d orcl
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-------------------------------
+RELOCATING A SERVICE IN RAC :-
+-------------------------------
+
+1) FIRST RELOACTE THE SERVICE :-
+   $ srvctl relocate service -d orcl -s ser2 -oldinst orcl1 -newinst orcl2       
+
+2) THEN, UPDATE THE CONFIGURATION OF SERVICE :-
+   $ srvctl modify service -db orcl -service ser2 -modifyconfig -preferred "orcl2" -available "orcl1"      <------- Modify the preferred and available instance.
+   
+   # MAKE SURE THAT BOTH STEPS SHOULD BE DONE ,SO THAT AT THE TIME OF RESTARTING THE DB, THE SERVICE WILL NOT AUTOMATICALLY GETS RELOCATED TO OTHER NODE.
+   
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-----------------------------
+REMOVING A SERVICE IN RAC :-
+-----------------------------
+
+$ srvctl remove service -d orcl -s ser2
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                            
+							************************* ASMCMD COMMANDS *************************
+							
+
+lsdg                                                                                       <--------- TO LIST ALL FILES
+
+rm group_6.275.1062181375                                                                  <--------- TO REMOVE A FILE
+
+cp +DATA/ORCL/ONLINELOG/group_6.275.1062181375 +FRA/ORCL/ONLINELOG/group_6                 <--------- TO COPY FILE TO ANOTHER LOCATION
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                             ************************* GRID COMMANDS *************************
+							 
+
+ crsctl stop crs                  <----------  STOP CRS NORMALLY
+ 
+ crsctl stop crs -f               <----------  STOP CRS FORCEFULLY
+
+ crsctl start crs -wait            <---------- START CRS
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SQL> alter database add logfile thread 1 group 6 ('+DATA','+FRA') size  50M;                <---------- ADD LOG FILE
+
+SQL> alter system archive log all;                                                          <---------- TO MANUALLY ARCHIVE
+
+
+*******************************************************************************************************************************************************************
+
