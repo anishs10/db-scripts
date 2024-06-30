@@ -1,0 +1,28 @@
+STARTUP NOMOUNT
+CREATE CONTROLFILE REUSE DATABASE "DEBTRI" NORESETLOGS  ARCHIVELOG
+    MAXLOGFILES 16
+    MAXLOGMEMBERS 3
+    MAXDATAFILES 100                    ( This script depents on debkumar db please change it your need)
+    MAXINSTANCES 8
+    MAXLOGHISTORY 292
+LOGFILE
+  GROUP 1 (
+    '/u01/app/oracle/oradata/DEBTRI/onlinelog/redo_01log',
+    '/u01/app/oracle/flash_recovery_area/DEBTRI/onlinelog/redo_02.log'
+  ) SIZE 50M BLOCKSIZE 512,
+  GROUP 2 (
+    '/u01/app/oracle/oradata/DEBTRI/onlinelog/redo_3.log',
+    '/u01/app/oracle/flash_recovery_area/DEBTRI/onlinelog/.log'
+  ) SIZE 50M BLOCKSIZE 512,
+  GROUP 3 (
+    '/u01/app/oracle/oradata/DEBTRI/onlinelog/o1_mf_3_fz7zs4dm_.log',
+    '/u01/app/oracle/flash_recovery_area/DEBTRI/onlinelog/o1_mf_3_fz7zs4xo_.log'
+  ) SIZE 50M BLOCKSIZE 512
+-- STANDBY LOGFILE
+DATAFILE
+  '/u01/app/oracle/oradata/DEBTRI/datafile/o1_mf_system_g051qx8d_.dbf',
+  '/u01/app/oracle/oradata/DEBTRI/datafile/o1_mf_sysaux_g051yjph_.dbf',
+  '/u01/app/oracle/oradata/DEBTRI/datafile/o1_mf_undotbs1_g051z3r2_.dbf',
+  '/u01/app/oracle/oradata/DEBTRI/datafile/o1_mf_users_g051zlwo_.dbf',
+  '/u01/app/oracle/oradata/DEBTRI/datafile/o1_mf_example_g0520f3d_.dbf'
+CHARACTER SET WE8MSWIN1252;
