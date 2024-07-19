@@ -1,0 +1,16 @@
+BACKUP QUERIES
+------------------------
+1.SCHEMA BACKUP WITH Ignore table
+---------------------------------------------------
+nohup mysqldump -uroot -pmito  --databases zabbixDB  --routines --single-transaction --set-gtid-purged=OFF --ignore-table=zabbixDB.acknowledges --ignore-table=zabbixDB.alerts --ignore-table=zabbixDB.auditlog --ignore-table=zabbixDB.auditlog_details --ignore-table=zabbixDB.events --ignore-table=zabbixDB.event_recovery  --ignore-table=zabbixDB.event_tag --ignore-table=zabbixDB.history --ignore-table=zabbixDB.history_log --ignore-table=zabbixDB.history_str --ignore-table=zabbixDB.history_text --ignore-table=zabbixDB.history_uint --ignore-table=zabbixDB.problem --ignore-table=zabbixDB.problem_tag --ignore-table=zabbixDB.sessions --ignore-table=zabbixDB.trends --ignore-table=zabbixDB.trends_uint --ignore-table=zabbixDB.history_uint_backup --ignore-table=zabbixDB.history_uint zabbixDB >  /backup/full_bkp/pmse01lx0042v/zabbixDB.sql &
+
+
+2. SCHEMA BACKUP
+---------------------------
+mysqldump -u root -pmito --databases grafana --triggers --routines --events --single-transaction --set-gtid-purged=OFF > /backup/full_bkp/pmse01lx0042v/grafana.sql
+
+
+3.FullDB(LOGICAL)
+---------------------------
+mysqldump -u root -p  --all-databases --triggers --routines --events --single-transaction --set-gtid-purged=OFF > /backup/full_bkp/pmse01lx0042v/all.sql
+
