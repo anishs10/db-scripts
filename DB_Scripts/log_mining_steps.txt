@@ -1,0 +1,45 @@
+If someone has wrongly executed the SQL and updated production data then you as DBA might need to troubleshoot.
+DBA can do log mining and identify who has done what from which machine. 
+Not only this you can generate undo SQL(recover data). 
+
+
+
+Step 1: Specify the list of redo log files to be analyzed.
+-----------------------------------------------------------------
+Specify the redo log files which you want to analyze.
+
+
+SQL> EXECUTE DBMS_LOGMNR.ADD_LOGFILE( -
+LOGFILENAME => '/opt/data/oracle2/PRDWFMSO/FRA/PRDWFMSO/archivelog/2014_08_01/o1_mf_1_2514_9xpfvpf7_.arc',OPTIONS => DBMS_LOGMNR.NEW);
+
+PL/SQL procedure successfully completed.
+
+
+
+
+
+Step 2: Start LogMiner.
+-----------------------------
+
+SQL> EXECUTE DBMS_LOGMNR.START_LOGMNR(OPTIONS => DBMS_LOGMNR.DICT_FROM_ONLINE_CATALOG);
+
+PL/SQL procedure successfully completed.
+
+
+
+
+
+Step 3: Query the V$LOGMNR_CONTENTS view.
+----------------------------------------------
+Now when the mining is completed you can query the view in order to crept details fetched during mining session.
+It will provide you details like username, XID, session details, actions, UNDO and REDO queries, timestamp,operation, session info etc.
+ 
+Example:
+SELECT username AS USR, (XIDUSN || '.' || XIDSLT || '.' ||  XIDSQN) AS XID,SQL_REDO, SQL_UNDO,TIMESTAMP,OS_USERNAME,MACHINE_NAME,SESSION# FROM V$LOGMNR_CONTENTS WHERE username='W6ADMIN' AND UPPER(SQL_REDO) LIKE '%REQ000000031283%';
+
+
+
+
+Step 4: End the LogMiner session.
+----------------------------------------------
+SQL> EXECUTE DBMS_LOGMNR.END_LOGMNR();
