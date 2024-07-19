@@ -1,0 +1,23 @@
+0 */6 * * * /opt/app/product/scripts/gg_stop_start_wfm.sh
+
+[oracle@osekilx410p ~]$ cat /opt/app/product/scripts/gg_stop_start_tm.sh
+#!/bin/sh
+export ORACLE_HOME=/opt/app/product/oracle/product/11.2.0/client_1
+export LD_LIBRARY_PATH=$ORACLE_HOME/lib:$LD_LIBRARY_PATH
+export GGHOME=/onetm_ods_gg/ogg_bigdata
+export PATH=$PATH:.
+MSGFILE="/tmp/mail.txt"
+EMAILFILE="/tmp/email.txt"
+EMAIL_ID=anish.kumar.roy@ericsson.com
+export EMAIL_ID
+SERVERNAME=`hostname`
+cd $GGHOME
+ggsci<<WEOF
+kill replicat *
+shell sleep 5
+info all
+start replicat *
+shell sleep 5
+info all
+exit
+WEOF
